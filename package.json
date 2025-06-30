@@ -1,0 +1,24 @@
+{
+  "name": "b2b-fashion-extractor",
+  "version": "1.0.0",
+  "description": "Système d'extraction automatique pour b2bfashion.online",
+  "main": "index.js",
+  "engines": {
+    "node": "18.x"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "echo 'No build step required'",
+    "postinstall": "echo 'Installation completed'"
+  },
+  "dependencies": {
+    "puppeteer": "^21.6.1",
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "node-cron": "^3.0.3"
+  },
+  "keywords": ["web-scraping", "b2b", "fashion", "automation", "api"],
+  "author": "Votre Nom",
+  "license": "MIT"
+}
