@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+const Database = require('better-sqlite3');
 const cron = require('node-cron');
 const fs = require('fs').promises;
 
@@ -27,9 +27,9 @@ class DatabaseManager {
   }
 
   async init() {
-    await fs.mkdir('./data', { recursive: true });
-    this.db = new sqlite3.Database('./data/fashion_products.db');
-    await this.createTables();
+  await fs.mkdir('./data', { recursive: true });
+  this.db = new Database('./data/fashion_products.db');
+  this.createTables();
   }
 
   createTables() {
