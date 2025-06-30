@@ -99,20 +99,146 @@ class MockExtractor {
       // Simuler un délai d'extraction
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // Générer des produits de test réalistes
-      const products = this.generateRealisticProducts();
-      
-      log('info', `✅ Extraction simulée [${this.id}]: ${products.length} produits`);
-      return products;
-      
-    } catch (error) {
-      log('error', `❌ Erreur extraction [${this.id}]:`, error.message);
-      throw error;
-    }
-  }
+      // ============================================================================
+// MODIFICATION POUR AJOUTER DE VRAIES IMAGES PLACEHOLDER
+// Remplacez la fonction generateRealisticProducts() dans votre index.js
+// ============================================================================
 
-  generateRealisticProducts() {
-    const products = [];
+generateRealisticProducts() {
+  const products = [];
+  
+  // Données réalistes de mode B2B
+  const brands = [
+    'Calvin Klein', 'Hugo Boss', 'Ralph Lauren', 'Tommy Hilfiger', 
+    'Lacoste', 'Armani', 'Versace', 'Dolce & Gabbana', 'Gucci', 'Prada'
+  ];
+  
+  const categories = [
+    'Chemises Business', 'Pantalons Costume', 'Vestes Blazer', 
+    'Robes Cocktail', 'Cravates Luxe', 'Chaussures Cuir',
+    'Accessoires Mode', 'Montres Premium', 'Sacs à Main', 'Bijoux'
+  ];
+  
+  const materials = [
+    '100% Coton', '100% Laine', 'Soie Naturelle', 'Lin Premium',
+    'Cachemire', 'Cuir Véritable', 'Polyester Haute Qualité'
+  ];
+  
+  const seasons = ['Printemps/Été 2025', 'Automne/Hiver 2025', 'Collection Permanente'];
+  
+  const collections = ['Business Line', 'Casual Chic', 'Evening Wear', 'Sport Luxury'];
+
+  // Catégories d'images pour des photos plus pertinentes
+  const imageCategories = {
+    'Chemises Business': 'business-shirt',
+    'Pantalons Costume': 'suit-pants',
+    'Vestes Blazer': 'blazer',
+    'Robes Cocktail': 'cocktail-dress',
+    'Cravates Luxe': 'luxury-tie',
+    'Chaussures Cuir': 'leather-shoes',
+    'Accessoires Mode': 'fashion-accessory',
+    'Montres Premium': 'luxury-watch',
+    'Sacs à Main': 'handbag',
+    'Bijoux': 'jewelry'
+  };
+
+  for (let i = 0; i < 15; i++) {
+    const brand = brands[Math.floor(Math.random() * brands.length)];
+    const category = categories[Math.floor(Math.random() * categories.length)];
+    const material = materials[Math.floor(Math.random() * materials.length)];
+    
+    const basePrice = 39.99 + (Math.random() * 400);
+    const hasDiscount = Math.random() > 0.6;
+    const discount = hasDiscount ? Math.floor(Math.random() * 50) + 10 : 0;
+    
+    const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const availableSizes = sizes.slice(0, Math.floor(Math.random() * 4) + 2);
+    
+    const colors = ['Noir', 'Blanc', 'Bleu Marine', 'Gris Anthracite', 'Bordeaux', 'Beige', 'Kaki'];
+    const availableColors = colors.slice(0, Math.floor(Math.random() * 3) + 1);
+    
+    const inStock = Math.random() > 0.15;
+    const stockQuantity = inStock ? Math.floor(Math.random() * 50) + 1 : 0;
+
+    // NOUVELLES IMAGES RÉELLES !
+    const imageCategory = imageCategories[category] || 'fashion';
+    const imageWidth = 400;
+    const imageHeight = 400;
+    const productId = i + 1;
+    
+    // Générer plusieurs types d'images réelles
+    const realImages = [
+      // Image principale Unsplash (haute qualité)
+      `https://source.unsplash.com/${imageWidth}x${imageHeight}/?${imageCategory},fashion,${brand.toLowerCase().replace(/\s+/g, '')}`,
+      
+      // Image détail Picsum (couleur cohérente)
+      `https://picsum.photos/seed/product${productId}/${imageWidth}/${imageHeight}`,
+      
+      // Image alternative Unsplash
+      `https://source.unsplash.com/${imageWidth}x${imageHeight}/?luxury,premium,${imageCategory}`,
+      
+      // Image placeholder avec texte
+      `https://via.placeholder.com/${imageWidth}x${imageHeight}/2196F3/FFFFFF?text=${encodeURIComponent(brand + ' ' + category.split(' ')[0])}`
+    ];
+
+    products.push({
+      id: Date.now() + i,
+      reference: `${brand.replace(/[^A-Z]/g, '')}${Date.now().toString().slice(-6)}${String(i).padStart(2, '0')}`,
+      name: `${category} ${brand} Premium`,
+      brand: brand,
+      category: category.split(' ')[0],
+      subcategory: category,
+      price: Math.round(basePrice * 100) / 100,
+      originalPrice: hasDiscount ? Math.round((basePrice * (1 + discount / 100)) * 100) / 100 : null,
+      discountPercent: discount,
+      currency: 'EUR',
+      inStock: inStock,
+      stockQuantity: stockQuantity,
+      description: `${category} de qualité supérieure de la marque ${brand}. Conçu avec des matériaux premium pour un style élégant et professionnel. Parfait pour les occasions business et événements formels.`,
+      detailedDescription: `Cette pièce exclusive ${category.toLowerCase()} allie style et confort. Fabriquée avec ${material.toLowerCase()}, elle offre une coupe parfaite et une durabilité exceptionnelle. Idéale pour compléter votre garde-robe professionnelle.`,
+      material: material,
+      careInstructions: 'Nettoyage à sec recommandé. Repassage à température moyenne.',
+      sizes: availableSizes,
+      colors: availableColors,
+      season: seasons[Math.floor(Math.random() * seasons.length)],
+      collection: collections[Math.floor(Math.random() * collections.length)],
+      tags: ['Premium', 'Business', 'Élégant', 'Qualité Supérieure'],
+      weight: `${Math.floor(Math.random() * 500) + 200}g`,
+      dimensions: {
+        length: Math.floor(Math.random() * 20) + 40,
+        width: Math.floor(Math.random() * 15) + 30,
+        height: Math.floor(Math.random() * 5) + 2
+      },
+      url: `${CONFIG.extraction.baseUrl}/product/${i + 1}`,
+      
+      // ✨ NOUVELLES VRAIES IMAGES ✨
+      images: realImages,
+      
+      // Image principale pour affichage rapide
+      thumbnail: realImages[0],
+      
+      rating: Math.round((Math.random() * 2 + 3) * 10) / 10, // Entre 3.0 et 5.0
+      reviewCount: Math.floor(Math.random() * 100) + 5,
+      vendor: {
+        name: `${brand} Official Store`,
+        rating: Math.round((Math.random() * 1 + 4) * 10) / 10,
+        location: 'Europe'
+      },
+      shipping: {
+        free: basePrice > 100,
+        deliveryTime: `${Math.floor(Math.random() * 3) + 2}-${Math.floor(Math.random() * 3) + 5} jours ouvrés`,
+        cost: basePrice > 100 ? 0 : Math.round((Math.random() * 10 + 5) * 100) / 100
+      },
+      extractedAt: new Date().toISOString(),
+      extractionId: this.id,
+      lastUpdated: new Date().toISOString(),
+      dataSource: 'b2bfashion.online',
+      confidence: Math.round((Math.random() * 20 + 80) * 100) / 100 // 80-100%
+    });
+  }
+  
+  return products;
+}
     
     // Données réalistes de mode B2B
     const brands = [
